@@ -9,7 +9,7 @@ export const useTimerStore = create((set) => ({
   longBreakTime: 15 * 60,
   themeColor: "#F87070",
   fontSize: "80px",
-  
+
   // Her mod için ayrı süre ve durum takibi
   pomodoroSeconds: 25 * 60,
   shortBreakSeconds: 5 * 60,
@@ -23,14 +23,19 @@ export const useTimerStore = create((set) => ({
     [`${state.mode}Seconds`]: seconds
   })),
 
-  setIsRunning: (isRunning) => set((state) => ({
-    [`${state.mode}IsRunning`]: isRunning
-  })),
+  setIsRunning: (isRunning) => set((state) => {
+    // Diğer modların çalışmasını durdur
+    return {
+      pomodoroIsRunning: state.mode === "pomodoro" ? isRunning : false,
+      shortBreakIsRunning: state.mode === "shortBreak" ? isRunning : false,
+      longBreakIsRunning: state.mode === "longBreak" ? isRunning : false,
+    };
+  }),
 
   setMode: (newMode) => set((state) => {
     const now = Date.now();
     const timeSpent = Math.floor((now - state.lastModeChangeTime) / 1000);
-    
+
     // Eğer önceki mod çalışıyorsa, geçen süreyi diğer modlardan düş
     if (state[`${state.mode}IsRunning`]) {
       const updates = {};
