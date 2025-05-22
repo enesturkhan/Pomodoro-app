@@ -11,14 +11,20 @@ export function useTimer() {
   const reset = useTimerStore((state) => state.reset);
 
   useEffect(() => {
-    if (!isRunning) return;
-    if (seconds === 0) {
+    let interval;
+
+    if (isRunning && seconds > 0) {
+      interval = setInterval(() => {
+        setSeconds(seconds - 1);
+      }, 1000);
+    } else if (seconds === 0) {
       reset();
-      return;
     }
-    const interval = setInterval(() => {
-      setSeconds(seconds - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isRunning, seconds, setSeconds, reset]);
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRunning, seconds, setSeconds, reset, mode]);
+
+  return null;
 } 
