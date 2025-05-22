@@ -13,12 +13,12 @@ export default function ModeSelector() {
   const { mode, setMode } = useTimerStore();
   
   return (
-    <div className="flex bg-[#161932] rounded-full p-1.5 gap-1.5 relative">
+    <div className="flex bg-[#161932] rounded-full p-1.5 gap-1.5 relative w-full max-w-[400px] mx-auto">
       {MODES.map((m) => (
         <button
           key={m.key}
           onClick={() => setMode(m.key)}
-          className={`px-6 py-2.5 rounded-full font-bold transition-all duration-300 relative z-10 ${
+          className={`flex-1 px-4 sm:px-6 py-2.5 rounded-full font-bold transition-all duration-300 relative z-10 text-sm sm:text-base ${
             mode === m.key
               ? "text-[#23253A]"
               : "text-[#D7E0FF] hover:text-white"
@@ -32,7 +32,7 @@ export default function ModeSelector() {
         initial={false}
         animate={{
           x: `${(MODES.findIndex(m => m.key === mode) * 100) / MODES.length}%`,
-          width: `${100 / MODES.length}%`,
+          width: `calc(${100 / MODES.length}% - 4px)`,
         }}
         transition={{
           type: "spring",
