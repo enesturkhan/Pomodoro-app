@@ -2,18 +2,17 @@
 
 import { useTimerStore } from "../store/timerStore";
 import { formatTime } from "../formatTime";
-import { useTimer } from "../hooks/useTimer";
 import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
 
 export default function TimerDisplay() {
   const mode = useTimerStore((state) => state.mode);
-  const seconds = useTimerStore((state) => state[`${mode}Seconds`]);
-  const isRunning = useTimerStore((state) => state[`${mode}IsRunning`]);
-  const setIsRunning = useTimerStore((state) => state.setIsRunning);
+  const seconds = useTimerStore((state) => state.seconds);
+  const isRunning = useTimerStore((state) => state.isRunning);
+  const toggleTimer = useTimerStore((state) => state.toggleTimer);
+  const resetTimer = useTimerStore((state) => state.resetTimer);
   const themeColor = useTimerStore((state) => state.themeColor);
   const fontSize = useTimerStore((state) => state.fontSize);
-  const reset = useTimerStore((state) => state.reset);
-  useTimer();
 
   const total = {
     pomodoro: useTimerStore.getState().pomodoroTime,
@@ -25,7 +24,7 @@ export default function TimerDisplay() {
   return (
     <motion.div
       className="relative flex items-center justify-center w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] rounded-full bg-[#161932] shadow-2xl cursor-pointer mx-auto"
-      onClick={() => setIsRunning(!isRunning)}
+      onClick={toggleTimer}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
@@ -71,7 +70,7 @@ export default function TimerDisplay() {
         <motion.button
           onClick={(e) => {
             e.stopPropagation();
-            reset();
+            resetTimer();
           }}
           className="mt-2 text-[#161932] dark:text-[#D7E0FF] hover:text-[#F87070] dark:hover:text-[#F87070] transition-colors cursor-pointer"
           whileHover={{ rotate: 180 }}

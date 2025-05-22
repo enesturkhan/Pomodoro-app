@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 
-export const useTimerStore = create((set) => ({
+export const useTimerStore = create((set, get) => ({
   mode: "pomodoro",
   pomodoroTime: 25 * 60,
   shortBreakTime: 5 * 60,
@@ -10,81 +10,102 @@ export const useTimerStore = create((set) => ({
   themeColor: "#F87070",
   fontSize: "80px",
 
-  // Her mod için ayrı süre ve durum takibi
-  pomodoroSeconds: 25 * 60,
-  shortBreakSeconds: 5 * 60,
-  longBreakSeconds: 15 * 60,
-  pomodoroIsRunning: false,
-  shortBreakIsRunning: false,
-  longBreakIsRunning: false,
-  lastModeChangeTime: Date.now(),
+  // Tek bir zamanlayıcı durumu
+  seconds: 25 * 60,
+  isRunning: false,
 
-  setSeconds: (seconds) => set((state) => ({
-    [`${state.mode}Seconds`]: seconds
-  })),
-
-  setIsRunning: (isRunning) => set((state) => {
-    // Diğer modların çalışmasını durdur
-    return {
-      pomodoroIsRunning: state.mode === "pomodoro" ? isRunning : false,
-      shortBreakIsRunning: state.mode === "shortBreak" ? isRunning : false,
-      longBreakIsRunning: state.mode === "longBreak" ? isRunning : false,
-    };
-  }),
-
-  setMode: (newMode) => set((state) => {
-    const now = Date.now();
-    const timeSpent = Math.floor((now - state.lastModeChangeTime) / 1000);
-
-    // Eğer önceki mod çalışıyorsa, geçen süreyi diğer modlardan düş
-    if (state[`${state.mode}IsRunning`]) {
-      const updates = {};
-      if (state.mode !== "pomodoro") {
-        updates.pomodoroSeconds = Math.max(0, state.pomodoroSeconds - timeSpent);
-      }
-      if (state.mode !== "shortBreak") {
-        updates.shortBreakSeconds = Math.max(0, state.shortBreakSeconds - timeSpent);
-      }
-      if (state.mode !== "longBreak") {
-        updates.longBreakSeconds = Math.max(0, state.longBreakSeconds - timeSpent);
-      }
-      return {
-        ...updates,
-        mode: newMode,
-        lastModeChangeTime: now
-      };
+  // Mod değiştirme
+  setMode: (newMode) => {
+    // Önce mevcut zamanlayıcıyı durdur
+    if (get().isRunning) {
+      clearInterval(window.timerInterval);
     }
 
-    return {
+    // Yeni moda göre süreyi ayarla
+    const newSeconds = {
+      pomodoro: get().pomodoroTime,
+      shortBreak: get().shortBreakTime,
+      longBreak: get().longBreakTime
+    }[newMode];
+
+    set({
       mode: newMode,
-      lastModeChangeTime: now
-    };
-  }),
+      seconds: newSeconds,
+      isRunning: false
+    });
+  },
 
-  setPomodoroTime: (time) => set((state) => ({
-    pomodoroTime: time,
-    pomodoroSeconds: time,
-    [`${state.mode}IsRunning`]: false
-  })),
+  // Zamanlayıcıyı başlat/durdur
+  toggleTimer: () => {
+    const isRunning = !get().isRunning;
 
-  setShortBreakTime: (time) => set((state) => ({
-    shortBreakTime: time,
-    shortBreakSeconds: time,
-    [`${state.mode}IsRunning`]: false
-  })),
+    if (isRunning) {
+      // Zamanlayıcıyı başlat
+      window.timerInterval = setInterval(() => {
+        const currentSeconds = get().seconds;
 
-  setLongBreakTime: (time) => set((state) => ({
-    longBreakTime: time,
-    longBreakSeconds: time,
-    [`${state.mode}IsRunning`]: false
-  })),
+        if (currentSeconds <= 1) {
+          // Süre doldu, zamanlayıcıyı sıfırla
+          clearInterval(window.timerInterval);
+          set({
+            seconds: {
+              pomodoro: get().pomodoroTime,
+              shortBreak: get().shortBreakTime,
+              longBreak: get().longBreakTime
+            }[get().mode],
+            isRunning: false
+          });
+        } else {
+          // Süreyi azalt
+          set({ seconds: currentSeconds - 1 });
+        }
+      }, 1000);
+    } else {
+      // Zamanlayıcıyı durdur
+      clearInterval(window.timerInterval);
+    }
+
+    set({ isRunning });
+  },
+
+  // Zamanlayıcıyı sıfırla
+  resetTimer: () => {
+    if (get().isRunning) {
+      clearInterval(window.timerInterval);
+    }
+
+    set({
+      seconds: {
+        pomodoro: get().pomodoroTime,
+        shortBreak: get().shortBreakTime,
+        longBreak: get().longBreakTime
+      }[get().mode],
+      isRunning: false
+    });
+  },
+
+  // Ayarları güncelle
+  setPomodoroTime: (time) => {
+    set({ pomodoroTime: time });
+    if (get().mode === "pomodoro" && !get().isRunning) {
+      set({ seconds: time });
+    }
+  },
+
+  setShortBreakTime: (time) => {
+    set({ shortBreakTime: time });
+    if (get().mode === "shortBreak" && !get().isRunning) {
+      set({ seconds: time });
+    }
+  },
+
+  setLongBreakTime: (time) => {
+    set({ longBreakTime: time });
+    if (get().mode === "longBreak" && !get().isRunning) {
+      set({ seconds: time });
+    }
+  },
 
   setThemeColor: (color) => set({ themeColor: color }),
-  setFontSize: (size) => set({ fontSize: size }),
-
-  reset: () =>
-    set((state) => ({
-      [`${state.mode}Seconds`]: state[`${state.mode}Time`],
-      [`${state.mode}IsRunning`]: false
-    })),
+  setFontSize: (size) => set({ fontSize: size })
 })); 
