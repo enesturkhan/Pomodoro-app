@@ -4,7 +4,11 @@ import { useEffect } from "react";
 import { useTimerStore } from "../store/timerStore";
 
 export function useTimer() {
-  const { isRunning, seconds, setSeconds, reset } = useTimerStore();
+  const mode = useTimerStore((state) => state.mode);
+  const seconds = useTimerStore((state) => state[`${mode}Seconds`]);
+  const isRunning = useTimerStore((state) => state[`${mode}IsRunning`]);
+  const setSeconds = useTimerStore((state) => state.setSeconds);
+  const reset = useTimerStore((state) => state.reset);
 
   useEffect(() => {
     if (!isRunning) return;
