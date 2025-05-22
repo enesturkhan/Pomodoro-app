@@ -4,25 +4,24 @@ import { useTimerStore } from "../store/timerStore";
 import { motion } from "framer-motion";
 
 const MODES = [
-  { key: "pomodoro", label: "pomodoro" },
-  { key: "shortBreak", label: "kısa mola" },
-  { key: "longBreak", label: "uzun mola" },
+  { key: "pomodoro", label: "Pomodora" },
+  { key: "shortBreak", label: "Kısa mola" },
+  { key: "longBreak", label: "Uzun mola" },
 ];
 
 export default function ModeSelector() {
   const { mode, setMode } = useTimerStore();
-  
+
   return (
     <div className="flex bg-[#161932] rounded-full p-1.5 gap-1.5 relative w-full max-w-[400px] mx-auto">
       {MODES.map((m) => (
         <button
           key={m.key}
           onClick={() => setMode(m.key)}
-          className={`flex-1 px-4 sm:px-6 py-2.5 rounded-full font-bold transition-all duration-300 relative z-10 text-sm sm:text-base ${
-            mode === m.key
+          className={`flex-1 px-4 sm:px-6 py-2.5 rounded-full font-bold transition-all duration-300 relative z-10 text-sm sm:text-base ${mode === m.key
               ? "text-[#23253A]"
               : "text-[#D7E0FF] hover:text-white"
-          }`}
+            }`}
         >
           {m.label}
         </button>
