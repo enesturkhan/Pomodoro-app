@@ -28,21 +28,20 @@ export default function ModeSelector() {
         </button>
       ))}
       <motion.div
-        className="absolute bg-[#F87070] rounded-full h-[calc(100%-3px)]"
+        className="absolute bg-[#646060] rounded-full h-[calc(100%-3px)]"
         initial={false}
         animate={{
-          x: `${(MODES.findIndex(m => m.key === mode) * 100) / MODES.length}%`,
-          width: `calc(${100 / MODES.length}% - 4px)`,
+          left: `${(MODES.findIndex(m => m.key === mode) * (100 / MODES.length))}%`,
+          width: `${100 / MODES.length}%`,
         }}
         transition={{
           type: "spring",
-          stiffness: 500,
-          damping: 35,
-          mass: 0.8
+          stiffness: 300,
+          damping: 30,
+          mass: 1
         }}
         style={{
-          left: 0,
-          right: 'auto'
+          top: "3px"
         }}
       />
     </div>
