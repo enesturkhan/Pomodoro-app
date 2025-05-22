@@ -23,7 +23,7 @@ export default function TimerDisplay() {
   const percent = total ? ((total - seconds) / total) * 100 : 0;
 
   return (
-    <motion.div 
+    <motion.div
       className="relative flex items-center justify-center w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] rounded-full bg-[#161932] shadow-2xl cursor-pointer mx-auto"
       onClick={() => setIsRunning(!isRunning)}
       whileHover={{ scale: 1.02 }}
@@ -54,7 +54,7 @@ export default function TimerDisplay() {
         />
       </svg>
       <div className="flex flex-col items-center z-10">
-        <span className="font-bold text-[#D7E0FF] text-4xl sm:text-5xl md:text-6xl" style={{ fontSize }}>
+        <span className="font-bold text-[#161932] dark:text-[#D7E0FF] text-4xl sm:text-5xl md:text-6xl" style={{ fontSize }}>
           {formatTime(seconds)}
         </span>
         <AnimatePresence mode="wait">
@@ -63,17 +63,17 @@ export default function TimerDisplay() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
-            className="text-[#D7E0FF] tracking-[.3em] text-base sm:text-lg mt-2"
+            className="text-[#161932] dark:text-[#D7E0FF] tracking-[.3em] text-base sm:text-lg mt-2"
           >
             {isRunning ? "DURAKLAT" : "BAŞLAT"}
           </motion.span>
         </AnimatePresence>
-        <motion.button 
+        <motion.button
           onClick={(e) => {
             e.stopPropagation();
             reset();
           }}
-          className="mt-2 text-[#D7E0FF] hover:text-white transition-colors cursor-pointer"
+          className="mt-2 text-[#161932] dark:text-[#D7E0FF] hover:text-[#F87070] dark:hover:text-[#F87070] transition-colors cursor-pointer"
           whileHover={{ rotate: 180 }}
           transition={{ duration: 0.3 }}
         >
