@@ -14,30 +14,31 @@ export default function ModeSelector() {
   const themeColor = useTimerStore((state) => state.themeColor);
 
   return (
-    <div className="flex bg-[#161932] rounded-lg p-1 gap-1 relative w-[90%] sm:w-full max-w-[400px] mx-auto">
+    <div className="flex bg-[#161932] rounded-lg p-1 gap-1 relative w-full max-w-[500px] mx-auto">
       {MODES.map((m) => (
         <button
           key={m.key}
           onClick={() => setMode(m.key)}
-          className={`flex-1 px-2 sm:px-4 md:px-6 py-2 rounded-md font-bold transition-all duration-300 relative z-10 text-xs sm:text-sm md:text-base ${mode === m.key
+          className={`flex-1 px-2 sm:px-3 md:px-4 py-3 rounded-md font-bold transition-all duration-300 relative z-10 text-xs sm:text-sm whitespace-nowrap ${
+            mode === m.key
               ? "text-[#23253A]"
               : "text-[#D7E0FF] hover:text-white"
-            }`}
+          }`}
         >
           {m.label}
         </button>
       ))}
       <motion.div
-        className="absolute rounded-md h-[calc(100%-8px)]"
+        className="absolute rounded-md"
         style={{
           backgroundColor: themeColor,
-          top: "4px",
-          margin: "0 4px"
+          top: "6px",
+          height: "calc(100% - 12px)"
         }}
         initial={false}
         animate={{
-          left: `${(MODES.findIndex(m => m.key === mode) * (100 / MODES.length))}%`,
-          width: `${100 / MODES.length}%`,
+          left: `calc(${(MODES.findIndex(m => m.key === mode) * (100 / MODES.length))}% + 4px)` ,
+          width: `calc(${100 / MODES.length}% - 8px)`
         }}
         transition={{
           type: "spring",
@@ -48,4 +49,4 @@ export default function ModeSelector() {
       />
     </div>
   );
-} 
+}
