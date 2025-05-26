@@ -53,7 +53,7 @@ export default function TimerDisplay() {
         />
       </svg>
       <div className="flex flex-col items-center z-10">
-        <span className="font-bold text-[#161932] dark:text-[#D7E0FF] text-4xl sm:text-5xl md:text-6xl" style={{ fontSize }}>
+        <span className="font-bold text-[#ebedff] dark:text-[#d3d5db] text-4xl sm:text-5xl md:text-6xl" style={{ fontSize }}>
           {formatTime(seconds)}
         </span>
         <AnimatePresence mode="wait">
@@ -62,7 +62,7 @@ export default function TimerDisplay() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
-            className="text-[#161932] dark:text-[#D7E0FF] tracking-[.3em] text-base sm:text-lg mt-2"
+            className="text-[#d3d5e9] dark:text-[#ced0d8] tracking-[.3em] text-base sm:text-lg mt-2"
           >
             {isRunning ? "DURAKLAT" : "BAŞLAT"}
           </motion.span>
@@ -72,7 +72,7 @@ export default function TimerDisplay() {
             e.stopPropagation();
             resetTimer();
           }}
-          className="mt-2 text-[#161932] dark:text-[#D7E0FF] hover:text-[#F87070] dark:hover:text-[#F87070] transition-colors cursor-pointer"
+          className="mt-2 text-[#eff0ff] dark:text-[#D7E0FF] hover:text-[#F87070] dark:hover:text-[#F87070] transition-colors cursor-pointer"
           whileHover={{ rotate: 180 }}
           transition={{ duration: 0.3 }}
         >
