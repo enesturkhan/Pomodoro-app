@@ -4,8 +4,8 @@ import { useTimerStore } from "../store/timerStore";
 import { useState, useEffect } from "react";
 
 const COLOR_THEMES = [
-  { name: "Kırmızı", value: "#F87070" },
-  { name: "Mavi", value: "#70F3F8" },
+  { name: "Kırmızı", value:  "#70F3F8"},
+  { name: "Mavi", value: "#F87070" },
   { name: "Mor", value: "#D881F8" },
 ];
 
