@@ -7,7 +7,7 @@ export const useTimerStore = create((set, get) => ({
   pomodoroTime: 25 * 60,
   shortBreakTime: 5 * 60,
   longBreakTime: 15 * 60,
-  themeColor: "#F87070",
+  themeColor: "#70F3F8",
   fontSize: "80px",
 
   // Her mod için ayrı zamanlayıcı durumları

@@ -126,7 +126,7 @@ export default function Settings({ isOpen, onClose }) {
                   onClick={() => setTempFontSize(size.value)}
                   className={`px-4 py-2 rounded-full ${
                     tempFontSize === size.value
-                      ? "bg-[#F87070] text-white"
+                      ? "bg-[#70F3F8] text-black"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
                   }`}
                 >
@@ -157,7 +157,7 @@ export default function Settings({ isOpen, onClose }) {
           <div className="pt-4">
             <button
               onClick={handleSave}
-              className="w-full bg-[#F87070] text-white py-3 rounded-lg font-bold text-lg hover:bg-opacity-90 transition"
+              className="w-full bg-[#70F3F8] text-black py-3 rounded-lg font-bold text-lg hover:bg-opacity-90 transition"
             >
               Kaydet
             </button>
