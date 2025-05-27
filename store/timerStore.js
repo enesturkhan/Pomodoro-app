@@ -10,100 +10,151 @@ export const useTimerStore = create((set, get) => ({
   themeColor: "#F87070",
   fontSize: "80px",
 
-  // Tek bir zamanlayıcı durumu
-  seconds: 25 * 60,
-  isRunning: false,
+  // Her mod için ayrı zamanlayıcı durumları
+  timers: {
+    pomodoro: {
+      seconds: 25 * 60,
+      isRunning: false,
+      interval: null
+    },
+    shortBreak: {
+      seconds: 5 * 60,
+      isRunning: false,
+      interval: null
+    },
+    longBreak: {
+      seconds: 15 * 60,
+      isRunning: false,
+      interval: null
+    }
+  },
 
   // Mod değiştirme
   setMode: (newMode) => {
-    // Önce mevcut zamanlayıcıyı durdur
-    if (get().isRunning) {
-      clearInterval(window.timerInterval);
-    }
-
-    // Yeni moda göre süreyi ayarla
-    const newSeconds = {
-      pomodoro: get().pomodoroTime,
-      shortBreak: get().shortBreakTime,
-      longBreak: get().longBreakTime
-    }[newMode];
-
-    set({
-      mode: newMode,
-      seconds: newSeconds,
-      isRunning: false
-    });
+    set({ mode: newMode });
   },
 
   // Zamanlayıcıyı başlat/durdur
   toggleTimer: () => {
-    const isRunning = !get().isRunning;
+    const currentMode = get().mode;
+    const timer = get().timers[currentMode];
+    const isRunning = !timer.isRunning;
+
+    const timers = { ...get().timers };
 
     if (isRunning) {
       // Zamanlayıcıyı başlat
-      window.timerInterval = setInterval(() => {
-        const currentSeconds = get().seconds;
+      const interval = setInterval(() => {
+        const currentTimer = get().timers[currentMode];
 
-        if (currentSeconds <= 1) {
+        if (currentTimer.seconds <= 1) {
           // Süre doldu, zamanlayıcıyı sıfırla
-          clearInterval(window.timerInterval);
+          clearInterval(currentTimer.interval);
           set({
-            seconds: {
-              pomodoro: get().pomodoroTime,
-              shortBreak: get().shortBreakTime,
-              longBreak: get().longBreakTime
-            }[get().mode],
-            isRunning: false
+            timers: {
+              ...get().timers,
+              [currentMode]: {
+                ...currentTimer,
+                seconds: get()[`${currentMode}Time`],
+                isRunning: false,
+                interval: null
+              }
+            }
           });
         } else {
           // Süreyi azalt
-          set({ seconds: currentSeconds - 1 });
+          set({
+            timers: {
+              ...get().timers,
+              [currentMode]: {
+                ...currentTimer,
+                seconds: currentTimer.seconds - 1
+              }
+            }
+          });
         }
       }, 1000);
+
+      timers[currentMode] = {
+        ...timer,
+        isRunning: true,
+        interval
+      };
     } else {
       // Zamanlayıcıyı durdur
-      clearInterval(window.timerInterval);
+      if (timer.interval) {
+        clearInterval(timer.interval);
+      }
+      timers[currentMode] = {
+        ...timer,
+        isRunning: false,
+        interval: null
+      };
     }
 
-    set({ isRunning });
+    set({ timers });
   },
 
   // Zamanlayıcıyı sıfırla
   resetTimer: () => {
-    if (get().isRunning) {
-      clearInterval(window.timerInterval);
+    const currentMode = get().mode;
+    const timer = get().timers[currentMode];
+
+    if (timer.interval) {
+      clearInterval(timer.interval);
     }
 
     set({
-      seconds: {
-        pomodoro: get().pomodoroTime,
-        shortBreak: get().shortBreakTime,
-        longBreak: get().longBreakTime
-      }[get().mode],
-      isRunning: false
+      timers: {
+        ...get().timers,
+        [currentMode]: {
+          ...timer,
+          seconds: get()[`${currentMode}Time`],
+          isRunning: false,
+          interval: null
+        }
+      }
     });
   },
 
   // Ayarları güncelle
   setPomodoroTime: (time) => {
-    set({ pomodoroTime: time });
-    if (get().mode === "pomodoro" && !get().isRunning) {
-      set({ seconds: time });
-    }
+    set({ 
+      pomodoroTime: time,
+      timers: {
+        ...get().timers,
+        pomodoro: {
+          ...get().timers.pomodoro,
+          seconds: time
+        }
+      }
+    });
   },
 
   setShortBreakTime: (time) => {
-    set({ shortBreakTime: time });
-    if (get().mode === "shortBreak" && !get().isRunning) {
-      set({ seconds: time });
-    }
+    set({ 
+      shortBreakTime: time,
+      timers: {
+        ...get().timers,
+        shortBreak: {
+          ...get().timers.shortBreak,
+          seconds: time
+        }
+      }
+    });
   },
 
   setLongBreakTime: (time) => {
-    set({ longBreakTime: time });
-    if (get().mode === "longBreak" && !get().isRunning) {
-      set({ seconds: time });
-    }
+    set({ 
+      longBreakTime: time,
+      timers: {
+        ...get().timers,
+        longBreak: {
+          ...get().timers.longBreak,
+          seconds: time
+        }
+      }
+    });
   },
 
   setThemeColor: (color) => set({ themeColor: color }),

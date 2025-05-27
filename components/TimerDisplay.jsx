@@ -7,12 +7,14 @@ import React from "react";
 
 export default function TimerDisplay({ onSettingsClick }) {
   const mode = useTimerStore((state) => state.mode);
-  const seconds = useTimerStore((state) => state.seconds);
-  const isRunning = useTimerStore((state) => state.isRunning);
+  const timers = useTimerStore((state) => state.timers);
   const toggleTimer = useTimerStore((state) => state.toggleTimer);
   const resetTimer = useTimerStore((state) => state.resetTimer);
   const themeColor = useTimerStore((state) => state.themeColor);
   const fontSize = useTimerStore((state) => state.fontSize);
+
+  const currentTimer = timers[mode];
+  const { seconds, isRunning } = currentTimer;
 
   const total = {
     pomodoro: useTimerStore.getState().pomodoroTime,
